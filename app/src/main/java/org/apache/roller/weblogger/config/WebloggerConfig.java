@@ -123,6 +123,19 @@ public final class WebloggerConfig {
                     }
                 }
             }
+
+            String database_jdbc_connection_url = System.getenv("DATABASE_JDBC_CONNECTION_URL");
+            String database_jdbc_username = System.getenv("DATABASE_JDBC_USERNAME");
+            String database_jdbc_password = System.getenv("DATABASE_JDBC_PASSWORD");
+            if (database_jdbc_connection_url != null) {
+                config.put("database.jdbc.connectionURL", database_jdbc_connection_url);
+            }
+            if (database_jdbc_username != null) {
+                config.put("database.jdbc.username", database_jdbc_username);
+            }
+            if (database_jdbc_password != null) {
+                config.put("database.jdbc.password", database_jdbc_password);
+            }
             
             // initialize logging subsystem via WebloggerConfig
             PropertyConfigurator.configure(WebloggerConfig.getPropertiesStartingWith("log4j."));

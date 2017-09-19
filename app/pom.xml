@@ -41,7 +41,7 @@ limitations under the License.
         <commons-codec.version>1.10</commons-codec.version>
         <eclipse-link.version>2.5.2</eclipse-link.version>
         <guice.version>4.1.0</guice.version>
-        <java-mail.version>1.4.7</java-mail.version>
+        <java-mail.version>1.4.1</java-mail.version>
         <jsp-api.version>2.2</jsp-api.version>
         <jstl.version>1.2</jstl.version>
         <log4j.version>1.2.17</log4j.version>
@@ -400,13 +400,12 @@ limitations under the License.
             <version>${oauth-core.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.6</version>
         </dependency>
-
 
 
         <!-- Test deps -->
