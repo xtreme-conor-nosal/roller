@@ -19,14 +19,17 @@ package org.apache.roller.weblogger.business.search.operations;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.store.Directory;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 
 /**
  * @author aim4min
  */
 public abstract class ReadFromIndexOperation extends IndexOperation {
-    public ReadFromIndexOperation(IndexManagerImpl mgr) {
-        super(mgr);
+    public ReadFromIndexOperation(IndexManager manager) {
+        super(manager);
     }
     
     private static Log mLogger = LogFactory.getFactory().getInstance(

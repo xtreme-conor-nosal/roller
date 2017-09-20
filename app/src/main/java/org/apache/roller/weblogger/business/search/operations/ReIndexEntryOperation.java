@@ -28,6 +28,7 @@ import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.WeblogEntryManager;
 import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.search.FieldConstants;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 import org.apache.roller.weblogger.pojos.WeblogEntry;
 
@@ -56,7 +57,7 @@ public class ReIndexEntryOperation extends WriteToIndexOperation {
     /**
      * Adds a web log entry into the index.
      */
-    public ReIndexEntryOperation(Weblogger roller, IndexManagerImpl mgr,
+    public ReIndexEntryOperation(Weblogger roller, IndexManager mgr,
             WeblogEntry data) {
         super(mgr);
         this.roller = roller;

@@ -22,8 +22,11 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.Directory;
 import org.apache.roller.weblogger.WebloggerException;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.WeblogEntryManager;
@@ -50,7 +53,7 @@ public class AddEntryOperation extends WriteToIndexOperation {
     /**
      * Adds a web log entry into the index.
      */
-    public AddEntryOperation(Weblogger roller, IndexManagerImpl mgr,WeblogEntry data) {
+    public AddEntryOperation(Weblogger roller, IndexManager mgr, WeblogEntry data) {
         super(mgr);
         this.roller = roller;
         this.data = data;

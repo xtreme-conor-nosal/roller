@@ -29,9 +29,10 @@ import java.io.InputStream;
  */
 public class FileContent {
     
-    // the physical java.io.File backing this resource
-    private File resourceFile = null;
-    
+    private long lastModified;
+    private long length;
+    private InputStream inputStream;
+
     // the file Id of the resource
     private String fileId = null;
     
@@ -42,7 +43,22 @@ public class FileContent {
     public FileContent(Weblog weblog, String fileId, File file) {
         this.weblog = weblog;
         this.fileId = fileId;
-        this.resourceFile = file;
+        this.lastModified = file.lastModified();
+        this.length = file.length();
+        try {
+            inputStream = new FileInputStream(file);
+        } catch (java.io.FileNotFoundException ex) {
+            // should never happen, rethrow as runtime exception
+            throw new RuntimeException("Error constructing input stream", ex);
+        }
+    }
+
+    public FileContent(Weblog weblog, String fileId, long lastModified, long length, InputStream inputStream) {
+        this.weblog = weblog;
+        this.fileId = fileId;
+        this.lastModified = lastModified;
+        this.length = length;
+        this.inputStream = inputStream;
     }
     
     public Weblog getWeblog() {
@@ -50,7 +66,7 @@ public class FileContent {
     }
     
     public String getName() {
-        return resourceFile.getName();
+        return fileId;
     }
     
     public String getFileId() {
@@ -58,22 +74,14 @@ public class FileContent {
     }
     
     public long getLastModified() {
-        return resourceFile.lastModified();
+        return lastModified;
     }
     
     public long getLength() {
-        return resourceFile.length();
+        return length;
     }
     
-    /**
-     * Returns the input stream for the underlying file.
-     */
     public InputStream getInputStream() {
-        try {
-            return new FileInputStream(resourceFile);
-        } catch (java.io.FileNotFoundException ex) {
-            // should never happen, rethrow as runtime exception
-            throw new RuntimeException("Error constructing input stream", ex);
-        }
+        return inputStream;
     }
 }

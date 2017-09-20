@@ -28,6 +28,7 @@ import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.WeblogEntryManager;
 import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.search.FieldConstants;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 import org.apache.roller.weblogger.pojos.WeblogEntry;
 
@@ -53,7 +54,7 @@ public class RemoveEntryOperation extends WriteToIndexOperation {
     // ~ Constructors
     // ===========================================================
 
-    public RemoveEntryOperation(Weblogger roller, IndexManagerImpl mgr,
+    public RemoveEntryOperation(Weblogger roller, IndexManager mgr,
             WeblogEntry data) {
         super(mgr);
         this.roller = roller;

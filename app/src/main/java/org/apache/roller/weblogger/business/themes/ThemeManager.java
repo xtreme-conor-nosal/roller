@@ -96,6 +96,6 @@ public interface ThemeManager {
      *
      * @return true, if reloaded theme from disk
      */
-    boolean reLoadThemeFromDisk(String reloadTheme);
+    boolean reLoadThemeFromStorage(String reloadTheme);
 
 }

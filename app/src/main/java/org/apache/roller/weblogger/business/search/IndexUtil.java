@@ -45,11 +45,10 @@ public final class IndexUtil {
      * 
      * @return Lucene search term
      */
-    public static Term getTerm(String field, String input) {
+    public static Term getTerm(String field, String input, Analyzer analyzer) {
         if (input == null || field == null) {
             return null;
         }
-        Analyzer analyzer = IndexManagerImpl.getAnalyzer();
         Term term = null;
         try {
             TokenStream tokens = analyzer.tokenStream(field, new StringReader(input));

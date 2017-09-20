@@ -41,6 +41,9 @@ import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.UserManager;
 import org.apache.roller.weblogger.business.WeblogEntryManager;
 import org.apache.roller.weblogger.business.WeblogManager;
+import org.apache.roller.weblogger.business.mongo.MongoFileContentManager;
+import org.apache.roller.weblogger.business.mongo.MongoIndexManager;
+import org.apache.roller.weblogger.business.mongo.MongoThemeManager;
 import org.apache.roller.weblogger.business.pings.AutoPingManager;
 import org.apache.roller.weblogger.business.pings.PingQueueManager;
 import org.apache.roller.weblogger.business.pings.PingTargetManager;
@@ -51,6 +54,7 @@ import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 import org.apache.roller.weblogger.business.themes.ThemeManager;
 import org.apache.roller.weblogger.business.themes.ThemeManagerImpl;
+import org.apache.roller.weblogger.config.WebloggerConfig;
 import org.apache.roller.weblogger.planet.business.WebloggerRomeFeedFetcher;
 
 
@@ -79,10 +83,19 @@ public class JPAWebloggerModule implements Module {
         binder.bind(OAuthValidator.class).to(      SimpleOAuthValidator.class);
                 
         binder.bind(MediaFileManager.class).to(    JPAMediaFileManagerImpl.class);
-        binder.bind(FileContentManager.class).to(  FileContentManagerImpl.class);
-        binder.bind(IndexManager.class).to(        IndexManagerImpl.class);
-        binder.bind(PluginManager.class).to(       PluginManagerImpl.class);    
-        binder.bind(ThemeManager.class).to(        ThemeManagerImpl.class);
+
+        String property = WebloggerConfig.getProperty("mongo.uri");
+        if (property != null && !property.isEmpty()) {
+            binder.bind(FileContentManager.class).to(MongoFileContentManager.class);
+            binder.bind(IndexManager.class).to(MongoIndexManager.class);
+//            binder.bind(ThemeManager.class).to(MongoThemeManager.class);
+        } else {
+            binder.bind(FileContentManager.class).to(FileContentManagerImpl.class);
+            binder.bind(IndexManager.class).to(IndexManagerImpl.class);
+        }
+            binder.bind(ThemeManager.class).to(ThemeManagerImpl.class);
+
+        binder.bind(PluginManager.class).to(       PluginManagerImpl.class);
         
         binder.bind(URLStrategy.class).to(         MultiWeblogURLStrategy.class);
         binder.bind(PlanetURLStrategy.class).to(   MultiPlanetURLStrategy.class);

@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
@@ -34,6 +35,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopFieldDocs;
+import org.apache.lucene.store.Directory;
 import org.apache.roller.weblogger.business.search.FieldConstants;
 import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
@@ -80,7 +82,7 @@ public class SearchOperation extends ReadFromIndexOperation {
     public SearchOperation(IndexManager mgr) {
         // TODO: finish moving IndexManager to backend, so this cast is not
         // needed
-        super((IndexManagerImpl) mgr);
+        super(mgr);
     }
 
     // ~ Methods
@@ -106,7 +108,7 @@ public class SearchOperation extends ReadFromIndexOperation {
 
             MultiFieldQueryParser multiParser = new MultiFieldQueryParser(
                     FieldConstants.LUCENE_VERSION, SEARCH_FIELDS,
-                    IndexManagerImpl.getAnalyzer());
+                    manager.getAnalyzer());
 
             // Make it an AND by default. Comment this out for an or (default)
             multiParser.setDefaultOperator(MultiFieldQueryParser.Operator.AND);
@@ -115,7 +117,7 @@ public class SearchOperation extends ReadFromIndexOperation {
             Query query = multiParser.parse(term);
 
             Term tUsername = IndexUtil.getTerm(FieldConstants.WEBSITE_HANDLE,
-                    websiteHandle);
+                    websiteHandle, manager.getAnalyzer());
 
             if (tUsername != null) {
                 BooleanQuery bQuery = new BooleanQuery();
@@ -133,7 +135,7 @@ public class SearchOperation extends ReadFromIndexOperation {
             }
 
             Term tLocale = IndexUtil.getTerm(FieldConstants.LOCALE,
-                    locale);
+                    locale, manager.getAnalyzer());
 
             if (tLocale != null) {
                 BooleanQuery bQuery = new BooleanQuery();

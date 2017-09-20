@@ -17,11 +17,16 @@
 */
 package org.apache.roller.weblogger.business.search;
 
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.store.Directory;
 import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.InitializationException;
 import org.apache.roller.weblogger.business.search.operations.IndexOperation;
 import org.apache.roller.weblogger.pojos.WeblogEntry;
 import org.apache.roller.weblogger.pojos.Weblog;
+
+import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * Interface to Roller's Lucene-based search facility.
@@ -68,4 +73,13 @@ public interface IndexManager
 
     void rebuildWebsiteIndex() throws WebloggerException;
 
+    ReadWriteLock getReadWriteLock();
+
+    void resetSharedReader();
+
+    Directory getIndexDirectory();
+
+    IndexReader getSharedIndexReader();
+
+    Analyzer getAnalyzer();
 }

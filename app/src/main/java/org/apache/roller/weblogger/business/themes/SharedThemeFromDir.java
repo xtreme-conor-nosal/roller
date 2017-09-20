@@ -417,6 +417,7 @@ public class SharedThemeFromDir extends SharedTheme {
      * Set the value for a given template name.
      */
     private void addTemplate(ThemeTemplate template) {
+        log.debug("Add theme template for " + template.getName() + " " + template.getLink() + " " + template.getAction());
         this.templatesByName.put(template.getName(), template);
         this.templatesByLink.put(template.getLink(), template);
         if (!ComponentType.CUSTOM.equals(template.getAction())) {

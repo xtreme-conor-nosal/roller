@@ -113,7 +113,7 @@ public class SearchServlet extends HttpServlet {
             try {
                 ThemeManager manager = WebloggerFactory.getWeblogger()
                         .getThemeManager();
-                boolean reloaded = manager.reLoadThemeFromDisk(weblog
+                boolean reloaded = manager.reLoadThemeFromStorage(weblog
                         .getEditorTheme());
                 if (reloaded) {
                     if (WebloggerRuntimeConfig.isSiteWideWeblog(searchRequest

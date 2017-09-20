@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.LimitTokenCountAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -30,8 +31,9 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
 import org.apache.roller.weblogger.business.search.FieldConstants;
-import org.apache.roller.weblogger.business.search.IndexManagerImpl;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.config.WebloggerConfig;
 import org.apache.roller.weblogger.pojos.WeblogCategory;
 import org.apache.roller.weblogger.pojos.WeblogEntry;
@@ -53,12 +55,12 @@ public abstract class IndexOperation implements Runnable {
 
     // ~ Instance fields
     // ========================================================
-    protected IndexManagerImpl manager;
+    protected IndexManager manager;
     private IndexWriter writer;
 
     // ~ Constructors
     // ===========================================================
-    public IndexOperation(IndexManagerImpl manager) {
+    public IndexOperation(IndexManager manager) {
         this.manager = manager;
     }
 
@@ -170,11 +172,11 @@ public abstract class IndexOperation implements Runnable {
         try {
 
             // Limit to 1000 tokens.
-            LimitTokenCountAnalyzer analyzer = new LimitTokenCountAnalyzer(
-                    IndexManagerImpl.getAnalyzer(), 1000);
+            LimitTokenCountAnalyzer a = new LimitTokenCountAnalyzer(
+                    manager.getAnalyzer(), 1000);
 
             IndexWriterConfig config = new IndexWriterConfig(
-                    FieldConstants.LUCENE_VERSION, analyzer);
+                    FieldConstants.LUCENE_VERSION, a);
 
             writer = new IndexWriter(manager.getIndexDirectory(), config);
 

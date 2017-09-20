@@ -18,16 +18,13 @@
 
 package org.apache.roller.planet.business.fetcher;
 
+import com.rometools.fetcher.impl.*;
 import com.rometools.rome.feed.module.DCModule;
 import com.rometools.rome.feed.synd.SyndCategory;
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.fetcher.FeedFetcher;
-import com.rometools.fetcher.impl.FeedFetcherCache;
-import com.rometools.fetcher.impl.HttpURLFeedFetcher;
-import com.rometools.fetcher.impl.SyndFeedInfo;
-import com.rometools.fetcher.impl.DiskFeedInfoCache;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -41,6 +38,8 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.roller.weblogger.business.mongo.MongoFeedFetcher;
+import org.apache.roller.weblogger.business.mongo.MongoUtil;
 import org.apache.roller.planet.pojos.SubscriptionEntry;
 import org.apache.roller.planet.pojos.Subscription;
 import org.apache.roller.weblogger.config.WebloggerConfig;
@@ -240,45 +239,50 @@ public class RomeFeedFetcher implements org.apache.roller.planet.business.fetche
     
     // get a feed fetcher cache, if possible
     private FeedFetcherCache getRomeFetcherCache() {
-        
-        String cacheDirPath = WebloggerConfig.getProperty("cache.dir");
-        
-        // can't continue without cache dir
-        if (cacheDirPath == null) {
-            log.warn("Planet cache directory not set, feeds cannot be cached.");
-            return null;
-        }
-        
-        // allow ${user.home} in cache dir property
-        String cacheDirName = cacheDirPath.replaceFirst(
-                "\\$\\{user.home}",System.getProperty("user.home"));
-        
-        // allow ${catalina.home} in cache dir property
-        if (System.getProperty("catalina.home") != null) {
-            cacheDirName = cacheDirName.replaceFirst(
-                    "\\$\\{catalina.home}",System.getProperty("catalina.home"));
-        }
-        
-        // create cache  dir if it does not exist
-        File cacheDir = null;
-        try {
-            cacheDir = new File(cacheDirName);
-            if (!cacheDir.exists()) {
-                cacheDir.mkdirs();
+        if (MongoUtil.hasUri()) {
+            return MongoFeedFetcher.getInstance();
+        } else if (WebloggerConfig.getProperty("cache.dir") != null) {
+            String cacheDirPath = WebloggerConfig.getProperty("cache.dir");
+
+            // can't continue without cache dir
+            if (cacheDirPath == null) {
+                log.warn("Planet cache directory not set, feeds cannot be cached.");
+                return null;
             }
-        } catch (Exception e) {
-            log.error("Unable to create planet cache directory: " +
-                    ((cacheDir != null) ? cacheDir.getPath() : null), e);
-            return null;
+
+            // allow ${user.home} in cache dir property
+            String cacheDirName = cacheDirPath.replaceFirst(
+                    "\\$\\{user.home}",System.getProperty("user.home"));
+
+            // allow ${catalina.home} in cache dir property
+            if (System.getProperty("catalina.home") != null) {
+                cacheDirName = cacheDirName.replaceFirst(
+                        "\\$\\{catalina.home}",System.getProperty("catalina.home"));
+            }
+
+            // create cache  dir if it does not exist
+            File cacheDir = null;
+            try {
+                cacheDir = new File(cacheDirName);
+                if (!cacheDir.exists()) {
+                    cacheDir.mkdirs();
+                }
+            } catch (Exception e) {
+                log.error("Unable to create planet cache directory: " +
+                        ((cacheDir != null) ? cacheDir.getPath() : null), e);
+                return null;
+            }
+
+            // abort if cache dir is not writable
+            if (!cacheDir.canWrite()) {
+                log.error("Planet cache directory is not writable: " + cacheDir.getPath());
+                return null;
+            }
+
+            return new DiskFeedInfoCache(cacheDirName);
+        } else {
+            return LinkedHashMapFeedInfoCache.getInstance();
         }
-        
-        // abort if cache dir is not writable
-        if (!cacheDir.canWrite()) {
-            log.error("Planet cache directory is not writable: " + cacheDir.getPath());
-            return null;
-        }
-        
-        return new DiskFeedInfoCache(cacheDirName);
     }
 
 

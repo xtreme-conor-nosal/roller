@@ -211,7 +211,7 @@ public class PageServlet extends HttpServlet {
             try {
                 ThemeManager manager = WebloggerFactory.getWeblogger()
                         .getThemeManager();
-                boolean reloaded = manager.reLoadThemeFromDisk(weblog
+                boolean reloaded = manager.reLoadThemeFromStorage(weblog
                         .getEditorTheme());
                 if (reloaded) {
                     if (isSiteWide) {
@@ -267,26 +267,32 @@ public class PageServlet extends HttpServlet {
         // If this is a popup request, then deal with it specially
         // TODO: do we really need to keep supporting this?
         if (request.getParameter("popup") != null) {
+            log.debug("popup");
             try {
                 // Does user have a popupcomments page?
                 page = weblog.getTheme().getTemplateByName("_popupcomments");
             } catch (Exception e) {
+                log.error("failed to get popup theme", e);
                 // ignored ... considered page not found
             }
 
             // User doesn't have one so return the default
             if (page == null) {
+                log.debug("no theme for popup, use default");
                 page = new StaticThemeTemplate(
                         "templates/weblog/popupcomments.vm", TemplateLanguage.VELOCITY);
             }
 
             // If request specified the page, then go with that
         } else if ("page".equals(pageRequest.getContext())) {
+            log.debug("page context");
             page = pageRequest.getWeblogPage();
 
             // if we don't have this page then 404, we don't let
             // this one fall through to the default template
             if (page == null) {
+
+                log.debug("failed to get page");
                 if (!response.isCommitted()) {
                     response.reset();
                 }
@@ -298,6 +304,8 @@ public class PageServlet extends HttpServlet {
             // template
         } else if ("tags".equals(pageRequest.getContext())
                 && pageRequest.getTags() != null) {
+
+            log.debug("tags context");
             try {
                 page = weblog.getTheme().getTemplateByAction(
                         ComponentType.TAGSINDEX);
@@ -308,6 +316,8 @@ public class PageServlet extends HttpServlet {
             // if we don't have a custom tags page then 404, we don't let
             // this one fall through to the default template
             if (page == null) {
+
+                log.debug("no theme for tags");
                 if (!response.isCommitted()) {
                     response.reset();
                 }
@@ -317,6 +327,8 @@ public class PageServlet extends HttpServlet {
 
             // If this is a permalink then look for a permalink template
         } else if (pageRequest.getWeblogAnchor() != null) {
+
+            log.debug("weblog anchor " + pageRequest.getWeblogAnchor());
             try {
                 page = weblog.getTheme().getTemplateByAction(
                         ComponentType.PERMALINK);
@@ -327,6 +339,8 @@ public class PageServlet extends HttpServlet {
 
         // if we haven't found a page yet then try our default page
         if (page == null) {
+
+            log.debug("no template for permalink");
             try {
                 page = weblog.getTheme().getDefaultTemplate();
             } catch (Exception e) {
@@ -338,6 +352,8 @@ public class PageServlet extends HttpServlet {
 
         // Still no page? Then that is a 404
         if (page == null) {
+
+            log.debug("page not found");
             if (!response.isCommitted()) {
                 response.reset();
             }

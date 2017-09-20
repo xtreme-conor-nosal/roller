@@ -25,6 +25,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.roller.weblogger.business.mongo.MongoUtil;
 import org.apache.roller.weblogger.business.Weblogger;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -198,6 +199,9 @@ public class RollerContext extends ContextLoaderListener
         WebloggerFactory.getWeblogger().shutdown();
         // do we need a more generic mechanism for presentation layer shutdown?
         CacheManager.shutdown();
+        if (MongoUtil.hasUri()) {
+            MongoUtil.getMongoClient().close();
+        }
     }
 
 

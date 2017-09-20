@@ -29,6 +29,7 @@ import org.apache.roller.util.RollerConstants;
 import org.apache.roller.weblogger.WebloggerException;
 import org.apache.roller.weblogger.business.Weblogger;
 import org.apache.roller.weblogger.business.search.FieldConstants;
+import org.apache.roller.weblogger.business.search.IndexManager;
 import org.apache.roller.weblogger.business.search.IndexManagerImpl;
 import org.apache.roller.weblogger.business.search.IndexUtil;
 import org.apache.roller.weblogger.pojos.Weblog;
@@ -61,7 +62,7 @@ public class RemoveWebsiteIndexOperation extends WriteToIndexOperation {
      * @param website
      *            The website to rebuild the index for, or null for all sites.
      */
-    public RemoveWebsiteIndexOperation(Weblogger roller, IndexManagerImpl mgr,
+    public RemoveWebsiteIndexOperation(Weblogger roller, IndexManager mgr,
             Weblog website) {
         super(mgr);
         this.roller = roller;
@@ -93,7 +94,7 @@ public class RemoveWebsiteIndexOperation extends WriteToIndexOperation {
                     handle = website.getHandle();
                 }
                 Term tHandle = IndexUtil.getTerm(FieldConstants.WEBSITE_HANDLE,
-                        handle);
+                        handle, manager.getAnalyzer());
 
                 if (tHandle != null) {
                     writer.deleteDocuments(tHandle);

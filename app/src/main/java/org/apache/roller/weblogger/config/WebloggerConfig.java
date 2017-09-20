@@ -136,6 +136,15 @@ public final class WebloggerConfig {
             if (database_jdbc_password != null) {
                 config.put("database.jdbc.password", database_jdbc_password);
             }
+
+            String mongoUri = System.getenv("MONGO_URI");
+            if (mongoUri != null && !mongoUri.isEmpty()) {
+                config.put("mongo.uri", mongoUri);
+            }
+            String mongoDb = System.getenv("MONGO_DB");
+            if (mongoDb != null && !mongoDb.isEmpty()) {
+                config.put("mongo.db", mongoDb);
+            }
             
             // initialize logging subsystem via WebloggerConfig
             PropertyConfigurator.configure(WebloggerConfig.getPropertiesStartingWith("log4j."));
