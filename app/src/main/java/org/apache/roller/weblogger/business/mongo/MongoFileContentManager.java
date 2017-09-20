@@ -33,6 +33,9 @@ public class MongoFileContentManager extends AbstractContentManager {
     @Override
     protected long getUsedBytes(Weblog weblog) throws FileNotFoundException, FilePathException {
         DB db = client.getDB(DATABASE);
+        if (!db.collectionExists(weblog.getId())) {
+            return 0;
+        }
         DBCollection collection = db.getCollection(weblog.getId());
         return (long) collection.getStats().get("storageSize");
     }
@@ -42,14 +45,24 @@ public class MongoFileContentManager extends AbstractContentManager {
         DB db = client.getDB(DATABASE);
         GridFS gridFS = new GridFS(db, weblog.getId());
         GridFSDBFile file = gridFS.findOne(fileId);
-        return new FileContent(weblog, fileId, file.getUploadDate().getTime(), file.getLength(), file.getInputStream());
+        if (file != null) {
+            long time = 0;
+            if (file.getUploadDate() != null) {
+                time = file.getUploadDate().getTime();
+            }
+            long length = file.getLength();
+            InputStream inputStream = file.getInputStream();
+            return new FileContent(weblog, fileId, time, length, inputStream);
+        } else {
+            throw new FileNotFoundException("Couldn't find " + fileId + " for weblog " + weblog.getId());
+        }
     }
 
     @Override
     public void saveFileContent(Weblog weblog, String fileId, InputStream is) throws FileNotFoundException, FilePathException, FileIOException {
         DB db = client.getDB(DATABASE);
         GridFS gridFS = new GridFS(db, weblog.getId());
-        gridFS.createFile(is, fileId);
+        gridFS.createFile(is, fileId).save();
     }
 
     @Override
