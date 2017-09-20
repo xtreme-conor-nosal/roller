@@ -11,7 +11,6 @@ You can override it with your own file via WEB-INF/tiles-def.xml
 <link rel="stylesheet" media="all" href='<s:url value="/roller-ui/styles/layout.css"/>' />
 <link rel="stylesheet" media="all" href='<s:url value="/roller-ui/styles/roller.css"/>' />
 <link rel="stylesheet" media="all" href='<s:url value="/roller-ui/styles/menu.css"/>' />
-
-<link rel="stylesheet" media="all" href="<s:url value="/roller-ui/theme/"/><s:property value="getProp('editor.theme')"/>/colors.css" />
+<link rel="stylesheet" media="all" href="<s:url value="/roller-ui/theme/%{getProp('editor.theme')}/colors.css"/>" />
 
 <script src="<s:url value="/theme/scripts/roller.js"/>"></script>
