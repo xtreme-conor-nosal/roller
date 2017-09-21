@@ -145,7 +145,24 @@ public final class WebloggerConfig {
             if (mongoDb != null && !mongoDb.isEmpty()) {
                 config.put("mongo.db", mongoDb);
             }
-            
+
+            String mailHostName = System.getenv("MAIL_HOST_NAME");
+            String mailPort = System.getenv("MAIL_HOST_PORT");
+            String mailUserName = System.getenv("MAIL_USER_NAME");
+            String mailPassword = System.getenv("MAIL_PASSWORD");
+            if (mailHostName != null && !mailHostName.isEmpty()) {
+                config.put("mail.hostname", mailHostName);
+            }
+            if (mailPort != null && !mailPort.isEmpty()) {
+                config.put("mail.port", mailPort);
+            }
+            if (mailUserName != null && !mailUserName.isEmpty()) {
+                config.put("mail.username", mailUserName);
+            }
+            if (mailPassword != null && !mailPassword.isEmpty()) {
+                config.put("mail.password", mailPassword);
+            }
+
             // initialize logging subsystem via WebloggerConfig
             PropertyConfigurator.configure(WebloggerConfig.getPropertiesStartingWith("log4j."));
             

@@ -475,13 +475,6 @@
         <mapped-name>jdbc/roller</mapped-name>
     </resource-ref>
 
-    <resource-ref>
-        <res-ref-name>mail/Session</res-ref-name>
-        <res-type>javax.mail.Session</res-type>
-        <res-auth>Container</res-auth>
-        <mapped-name>Session</mapped-name>
-    </resource-ref>
-
     <jsp-config>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>

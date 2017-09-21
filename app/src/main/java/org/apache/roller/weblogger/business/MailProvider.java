@@ -18,10 +18,9 @@
 
 package org.apache.roller.weblogger.business;
 
+import java.util.Map;
 import java.util.Properties;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -70,7 +69,8 @@ public class MailProvider {
         }
         
         // init and connect now so we fail early
-        if (type == ConfigurationType.JNDI_NAME) {            
+        if (type == ConfigurationType.JNDI_NAME) {
+            LOG.debug("Mail: get session from JNDI");
             if (jndiName != null && !jndiName.startsWith("java:")) {
                 jndiName = "java:comp/env/" + jndiName;
             }
@@ -81,15 +81,22 @@ public class MailProvider {
                 throw new StartupException("ERROR looking up mail-session with JNDI name: " + jndiName);
             }
         } else {
+            LOG.debug("Mail: get session from properties");
             Properties props = new Properties();
             props.put("mail.smtp.host", mailHostname);
+            props.put("mail.transport.protocol", "smtp");
+            Authenticator authenticator = null;
             if (mailUsername != null && mailPassword != null) {
-                props.put("mail.smtp.auth", "true");   
+                props.put("mail.smtp.auth", "true");
+                authenticator = new SMTPAuthenticator();
             }
             if (mailPort != -1) {
                 props.put("mail.smtp.port", ""+mailPort);
             }
-            session = Session.getDefaultInstance(props, null);
+            for (Map.Entry<Object, Object> entry : props.entrySet()) {
+                LOG.debug("Mail prop: " + entry.getKey() + " : " + entry.getValue());
+            }
+            session = Session.getDefaultInstance(props, authenticator);
         }
         
         try {
@@ -114,26 +121,18 @@ public class MailProvider {
      * Create and connect to transport, caller is responsible for closing transport.
      */
     public Transport getTransport() throws MessagingException {
-        
-        Transport transport;
-        
-        if (type == ConfigurationType.MAIL_PROPERTIES) {
-            // Configure transport ourselves using mail properties
-            transport = session.getTransport("smtp"); 
-            if (mailUsername != null && mailPassword != null && mailPort != -1) {
-                transport.connect(mailHostname, mailPort, mailUsername, mailPassword); 
-            } else if (mailUsername != null && mailPassword != null) {
-                transport.connect(mailHostname, mailUsername, mailPassword); 
-            } else {
-                transport.connect();
-            }
-        } else {
-            // Assume container set things up properly
-            transport = session.getTransport(); 
-            transport.connect();
-        }
-        
+        Transport transport = session.getTransport();
+        transport.connect();
         return transport;
     }
-    
+
+    private static class SMTPAuthenticator extends javax.mail.Authenticator {
+        public PasswordAuthentication getPasswordAuthentication() {
+            String username = WebloggerConfig.getProperty("mail.username");
+            String password = WebloggerConfig.getProperty("mail.password");
+            return new PasswordAuthentication(username, password);
+        }
+    }
+
+
 }
