@@ -25,7 +25,6 @@ import java.util.Enumeration;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.roller.util.PropertyExpander;
 
 
@@ -163,9 +162,6 @@ public final class WebloggerConfig {
                 config.put("mail.password", mailPassword);
             }
 
-            // initialize logging subsystem via WebloggerConfig
-            PropertyConfigurator.configure(WebloggerConfig.getPropertiesStartingWith("log4j."));
-            
             // finally we can start logging...
 
             // some debugging for those that want it

@@ -44,7 +44,7 @@ limitations under the License.
         <java-mail.version>1.4.1</java-mail.version>
         <jsp-api.version>2.2</jsp-api.version>
         <jstl.version>1.2</jstl.version>
-        <log4j.version>1.2.17</log4j.version>
+        <log4j.version>2.9.0</log4j.version>
         <lucene.version>4.10.4</lucene.version>
         <oauth-core.version>20100527</oauth-core.version>
         <maven-war.version>3.1.0</maven-war.version>
@@ -52,7 +52,6 @@ limitations under the License.
         <maven-antrun.version>1.0b3</maven-antrun.version>
         <rome.version>1.7.4</rome.version>
         <servlet.version>3.0.1</servlet.version>
-        <slf4j.version>1.7.25</slf4j.version>
         <spring.version>4.1.4.RELEASE</spring.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <struts.version>2.5.12</struts.version>
@@ -156,6 +155,12 @@ limitations under the License.
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>
             <version>${struts.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -197,8 +202,8 @@ limitations under the License.
         </dependency>
 
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
             <version>${log4j.version}</version>
         </dependency>
 
@@ -342,13 +347,6 @@ limitations under the License.
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.rometools</groupId>
             <artifactId>rome-fetcher</artifactId>
             <version>${rome.version}</version>
@@ -409,6 +407,12 @@ limitations under the License.
             <groupId>org.lumongo</groupId>
             <artifactId>lumongo-storage</artifactId>
             <version>0.31</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
