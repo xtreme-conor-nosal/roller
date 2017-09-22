@@ -355,13 +355,6 @@ limitations under the License.
 
         <dependency>
             <groupId>com.rometools</groupId>
-            <artifactId>rome-fetcher</artifactId>
-            <version>${rome.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.rometools</groupId>
             <artifactId>rome-propono</artifactId>
             <version>${rome.version}</version>
             <scope>compile</scope>
@@ -373,6 +366,10 @@ limitations under the License.
                 <exclusion>
                     <groupId>xmlrpc</groupId>
                     <artifactId>xmlrpc-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>core.rometools</groupId>
+                    <artifactId>rome</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
