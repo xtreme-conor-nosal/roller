@@ -298,7 +298,8 @@
             saveDraft,
             search,
             update,
-            view
+            view,
+            createNewDirectory
         </global-allowed-methods>
 
         <action name="mediaFileAdd"
