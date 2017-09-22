@@ -119,7 +119,9 @@ public abstract class AbstractThemeManager implements ThemeManager {
 			}
 		}
 
-		log.warn("No theme for weblog " + weblog.getName());
+		if (weblogTheme == null) {
+			log.warn("No theme for weblog " + weblog.getName());
+		}
 
 		// TODO: if somehow the theme is still null should we provide some
 		// kind of fallback option like a default theme?
