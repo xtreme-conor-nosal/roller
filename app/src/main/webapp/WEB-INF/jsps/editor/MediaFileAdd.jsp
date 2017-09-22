@@ -33,7 +33,7 @@
             }
             if (count == 1) {
                 $("#entry_bean_name").get(0).disabled = false;
-                $("#entry_bean_name").get(0).value = name;
+                $("#entry_bean_name").get(0).value = getFileName(name);
             } else if (count > 1) {
                 $("#entry_bean_name").css("font-style","italic");
                 $("#entry_bean_name").css("color","grey");
